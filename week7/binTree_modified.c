@@ -13,58 +13,7 @@ typedef struct
     int idxParent, idxLeftChild,idxRightChild;
 } BinaryTreeNode;
 
-void parseTexttoTree(FILE *btInputFile, char* temp, int num, int count_load,\
- int count_treebuild, int* inNumbers, BinaryTreeNode* bt) {
-    /** INPUT PROCESS LOOP **/
-    fscanf(btInputFile, "%s", &temp);
-    for (int i=0; i <= TEXT_BUFFER;  i++){
-        if (isdigit(temp[i])){
-            if (temp[i-1] == '-'){
-                num = -atoi(&temp[i]);
-            }
-            else{
-                num = atoi(&temp[i]);
-            }
-            inNumbers[count_load] = num;
-            count_load++;
-        } 
-    }
-
-    for (int i=0; i<count_load; i++){
-        if (0==i%3){
-            bt[count_treebuild].nodeID =inNumbers[i];
-        } else if (1==i%3){
-            bt[count_treebuild].leftChildID = inNumbers[i];
-        } else if (2==i%3) {
-            bt[count_treebuild].rightChildID = inNumbers[i];
-            count_treebuild++;
-        }
-    }
-
-    /** LOOK UP AND LINK LOOP **/
-    for (int i=0; i<count_treebuild; i++){
-        // bt[i].idxLeftChild = bt[i].leftChildID;
-        // bt[i].idxRightChild = bt[i].rightChildID;
-        if (bt[i].leftChildID == -1){
-            bt[i].idxLeftChild = -99;
-        } 
-        if (bt[i].rightChildID == -1) {
-            bt[i].idxRightChild = -99;
-        }
-        for (int j=0; j<count_treebuild; j++){
-            if (bt[i].nodeID == bt[j].leftChildID){
-                bt[i].idxParent = j;
-                bt[j].idxLeftChild = i;
-            } else if  (bt[i].nodeID == bt[j].rightChildID) {
-                bt[i].idxParent = j;
-                bt[j].idxRightChild = i;
-            } 
-        }
-    }
-}
-
-
-
+int modify(BinaryTreeNode *bt);
 
 int main(int argc, char ** argv){
     
@@ -95,16 +44,75 @@ int main(int argc, char ** argv){
     //     bt[i].nodeID = -1;     
     // }
 
-    parseTexttoTree(btInputFile, temp, num, count_load, count_treebuild, inNumbers, bt);
-    
-    close(btInputFile);
+
+    /** INPUT PROCESS LOOP **/
+    fscanf(btInputFile, "%s", &temp);
+    for (int i=0; i <= TEXT_BUFFER;  i++){
+        if (isdigit(temp[i])){
+            if (temp[i-1] == '-'){
+                num = -atoi(&temp[i]);
+            }
+            else{
+                num = atoi(&temp[i]);
+            }
+            inNumbers[count_load] = num;
+            count_load++;
+        } 
+    }
+
+    for (int i=0; i<count_load; i++){
+        if (0==i%3){
+            bt[count_treebuild].nodeID =inNumbers[i];
+        } else if (1==i%3){
+            bt[count_treebuild].leftChildID = inNumbers[i];
+        } else if (2==i%3) {
+            bt[count_treebuild].rightChildID = inNumbers[i];
+            count_treebuild++;
+        }
+    }
+    fclose(btInputFile);
+
+    /** LOOK UP AND LINK LOOP **/
+    for (int i=0; i<count_treebuild; i++){
+        // bt[i].idxLeftChild = bt[i].leftChildID;
+        // bt[i].idxRightChild = bt[i].rightChildID;
+        if (bt[i].leftChildID == -1){
+            bt[i].idxLeftChild = -99;
+        } 
+        if (bt[i].rightChildID == -1) {
+            bt[i].idxRightChild = -99;
+        }
+        for (int j=0; j<count_treebuild; j++){
+            if (bt[i].nodeID == bt[j].leftChildID){
+                bt[i].idxParent = j;
+                bt[j].idxLeftChild = i;
+            } else if  (bt[i].nodeID == bt[j].rightChildID) {
+                bt[i].idxParent = j;
+                bt[j].idxRightChild = i;
+            } 
+        }
+    }
+
 
     /** OUTPUT LOOP **/
-    for (int i=0; i<count_treebuild; i++){
-        printf("nodeID(%d) -> leftChildID(%d), rightChildID(%d), ParentID(%d)\n", 
-        bt[i].nodeID, bt[i].leftChildID, bt[i].rightChildID, bt[bt[i].idxParent].nodeID);    
-        printf("nodeID(%d) -> leftChildIdx(%d), rightChildIdx(%d), ParentIdx(%d)\n\n", 
-        bt[i].nodeID, bt[i].idxLeftChild, bt[i].idxRightChild, bt[i].idxParent);
-    }
+    // for (int i=0; i<count_treebuild; i++){
+    //     printf("nodeID(%d) -> leftChildID(%d), rightChildID(%d), ParentID(%d)\n", 
+    //     bt[i].nodeID, bt[i].leftChildID, bt[i].rightChildID, bt[bt[i].idxParent].nodeID);    
+    //     printf("nodeID(%d) -> leftChildIdx(%d), rightChildIdx(%d), ParentIdx(%d)\n\n", 
+    //     bt[i].nodeID, bt[i].idxLeftChild, bt[i].idxRightChild, bt[i].idxParent);
+    // }
+    // return 0;
+
+    printf("nodeID(%d) -> leftChildIdx(%d), rightChildIdx(%d), ParentIdx(%d)\n\n", 
+    bt[3].nodeID, bt[3].idxLeftChild, bt[3].idxRightChild, bt[3].idxParent);
+
+    modify(bt);
+
+    printf("nodeID(%d) -> leftChildIdx(%d), rightChildIdx(%d), ParentIdx(%d)\n\n", 
+    bt[3].nodeID, bt[3].idxLeftChild, bt[3].idxRightChild, bt[3].idxParent);
+
+}
+int modify(BinaryTreeNode *bt){
+    bt[3].rightChildID = 35;
     return 0;
 }
