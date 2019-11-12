@@ -1,6 +1,6 @@
 ECEC201: Advanced Programming for Engineers
 
-This is my repository to store codes submitted for labs in ECEC201 course at Drexel Univerisity. This course introduces the basics for C programming, good skills and habits for easy to comprehend code, and some tools for convenient programming: 
+This is my repository to store codes submitted for labs in a course, ECEC201, taught by Dr Andrew Cohen in Fall Term 2019 at Drexel Univerisity. This course introduces the basics for C programming, good skills and habits for easy to comprehend code, and some tools for convenient programming: 
 1. Virtual Machine (for students to get used to Linux cli)
 2. VSCode IDE
 3. Git
