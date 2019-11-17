@@ -95,42 +95,57 @@ int printTreeArray(BinaryTreeNode* bt, int numNodes){
 }
 
 int printTreeDFS(BinaryTreeNode* bt){
-    char parent[5];
-    char node[5];
-    int leftChildExist, rightChildExist;
+    char parent[5]="";
+    char node[5]="";
+    char leftChild[5]="", rightChild[2]="";
+    int leftChildExist=1, rightChildExist;
 
     if (bt->btParent == NULL){
-        sprintf(parent, "%d *", bt->btParent->nodeID); 
+        sprintf(parent, "%s", "");
+        sprintf(node, "%d *", bt->nodeID); 
     } else { 
-        sprintf(parent, "%d", bt->btParent->nodeID); 
+        sprintf(parent, "%d", bt->btParent->nodeID);
+        sprintf(node, "%d", bt->nodeID);  
     }
 
     if (bt->btLeftChild == NULL){
         leftChildExist = 0;
-        if  (bt->btRightChild == NULL) {
+        if  (bt->btRightChild == NULL) { //no child at all
             rightChildExist = 0;
             sprintf(node, "%d +", bt->nodeID);
-        } else {
+        } else { //right exists, left not
             rightChildExist = 1;
+            if ((bt->btRightChild->btRightChild == NULL) && (bt->btRightChild->btLeftChild==NULL)){
+                sprintf(rightChild, "%d +", bt->btRightChild->nodeID);//rightchild is leaf    
+            } else {
+                sprintf(rightChild, "%d", bt->btRightChild->nodeID);
+            }
         } 
-    } else {
-        if  (bt->btRightChild == NULL) {
-            sprintf(node, "%d", bt->nodeID);
-            rightChildExist = 0; 
+    } else {//left exists
+        if ((bt->btLeftChild->btRightChild == NULL) && (bt->btLeftChild->btLeftChild==NULL)){
+            sprintf(leftChild, "%d +", bt->btLeftChild->nodeID);//left child is leaf    
         } else {
+            sprintf(leftChild, "%d", bt->btLeftChild->nodeID);
+        }
+
+        if  (bt->btRightChild == NULL) {//left exists, right not
+            rightChildExist = 0; 
+        } else { //both exist
             rightChildExist = 1;
+            sprintf(rightChild, "%d", bt->btRightChild->nodeID);
         }
     }
 
+    printf("(%s) -> (%s): (%s), (%s)\n", 
+        parent, node, leftChild, rightChild);
+    
     if (rightChildExist == 1){
         printTreeDFS(bt->btRightChild);
     }
     if (leftChildExist == 1){
         printTreeDFS(bt->btLeftChild);
     }
-
 }
-
 
 
 
@@ -161,8 +176,9 @@ int main(int argc, char ** argv){
     // bt = InitNode(NUM_NODES);
     int numNodes = readBinaryTree(bt, btInputFile);
     BinaryTreeNode* root = setTreePointers(bt, numNodes);
-    printTreeArray(bt, numNodes);
-    printf("%d", root->nodeID);
+    //printTreeArray(bt, numNodes);
+    //printf("%d", root->nodeID);
+    printTreeDFS(root);
 
     
     return 0;
