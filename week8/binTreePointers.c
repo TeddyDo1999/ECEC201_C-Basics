@@ -1,9 +1,18 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #define NUM_NODES 10
 #define TEXT_BUFFER 100
 
+/* 
+Hanh Do Phung
+Drexel University
+11/16/2019
+
+A full implement of a binary tree. Consists of:
+--Initialization
+--Text parsing and tree data loading
+--Traversing and printing out nodes
+*/
 
 typedef struct _BTN
 {
@@ -14,25 +23,30 @@ typedef struct _BTN
 } BinaryTreeNode;
 
 
+/* readBinaryTree: function to read triplets of digits (1 char) from a csv file
+then store them in a binaryTree data structure. The triplet (a,b,c) is read 
+as a=nodeID, b=LeftChildID, c=RightChildID 
+Arguments are: --bt: pointer to first node in node array,
+               --btInputFile: csv file for parsing 
+Returns number of nodes built in tree  */
 int readBinaryTree(BinaryTreeNode* bt, FILE *btInputFile){
-    char temp[TEXT_BUFFER];
-    int inNumbers[TEXT_BUFFER];
+    char temp[TEXT_BUFFER]; //text array store each char comma separated 
+    int inNumbers[TEXT_BUFFER]; //Array with all numbers read from text file
     int num, count_load=0, count_treebuild=0;
     
     fscanf(btInputFile, "%s", &temp);
     for (int i=0; i <= TEXT_BUFFER;  i++){
         if (isdigit(temp[i])){
             if (temp[i-1] == '-'){
-                num = -atoi(&temp[i]);
+                num = -atoi(&temp[i]); //negative num
             }
             else{
-                num = atoi(&temp[i]);
+                num = atoi(&temp[i]);//positive num
             }
             inNumbers[count_load] = num;
-            count_load++;
+            count_load++; //number of triplets from text file
         } 
     }
-
     for (int i=0; i<count_load; i++){
         if (0==i%3){
             bt[count_treebuild].nodeID = inNumbers[i];
@@ -44,14 +58,16 @@ int readBinaryTree(BinaryTreeNode* bt, FILE *btInputFile){
         }
     }
     fclose(btInputFile);
-    
-    // for (int i=0; i<count_treebuild; i++){
-    //     printf("nodeID(%d) -> leftChildID(%d), rightChildID(%d)\n", 
-    //     bt[i].nodeID, bt[i].leftChildID, bt[i].rightChildID);    
-    // }
-    return count_treebuild;
+    return count_treebuild; // count_treebuild is number of nodes in Tree
 }
 
+
+/* setTreePointers serves to link the nodes together in the binaryTree structure.
+The array of nodes is traversed and the pointers to parent, left and right child 
+nodes are set to appropriate nodes.
+Arguments are: bt: pointer to 1st node of tree itself
+               numNodes: number of nodes in node array
+Returns pointer to root node */
 BinaryTreeNode* setTreePointers(BinaryTreeNode* bt, int numNodes){
     int count_treebuild= numNodes;
 
@@ -82,6 +98,10 @@ BinaryTreeNode* setTreePointers(BinaryTreeNode* bt, int numNodes){
 
 }
 
+
+/* Iterate through each node in node array and print to stdout its ID, 
+parent, and children. 
+Input: pointer to first node in node array, number of nodes in array*/
 int printTreeArray(BinaryTreeNode* bt, int numNodes){
     printf("(%d): (%d), (%d)\n",
         bt[0].nodeID, bt[0].leftChildID, bt[0].rightChildID);
@@ -94,6 +114,10 @@ int printTreeArray(BinaryTreeNode* bt, int numNodes){
     }       
 }
 
+
+/* Takes pointer to root node as input, recursively print out its ID, parent 
+and children. Root node is marked with a (*) mark and leaf node is marked with
+a (+) mark */
 int printTreeDFS(BinaryTreeNode* bt){
     char parent[5]="";
     char node[5]="";
@@ -140,10 +164,10 @@ int printTreeDFS(BinaryTreeNode* bt){
         parent, node, leftChild, rightChild);
     
     if (rightChildExist == 1){
-        printTreeDFS(bt->btRightChild);
+        printTreeDFS(bt->btRightChild); //recursively go to left child
     }
     if (leftChildExist == 1){
-        printTreeDFS(bt->btLeftChild);
+        printTreeDFS(bt->btLeftChild); //recursively go to right child
     }
 }
 
@@ -167,19 +191,10 @@ int main(int argc, char ** argv){
         return -2;
     }
 
-    /* INITIALIZATION */
-    //ATTENTION: BT IS THE POINTER TO 1ST ELEMENT OF ARRAY. BT = &BT[0]
     BinaryTreeNode bt[NUM_NODES] = {[0 ... NUM_NODES-1].nodeID=-1};    
-    
-    
-
-    // bt = InitNode(NUM_NODES);
     int numNodes = readBinaryTree(bt, btInputFile);
     BinaryTreeNode* root = setTreePointers(bt, numNodes);
     //printTreeArray(bt, numNodes);
-    //printf("%d", root->nodeID);
     printTreeDFS(root);
-
-    
     return 0;
 }
